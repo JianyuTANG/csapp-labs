@@ -1,0 +1,63 @@
+# Author: Tang Jianyu
+
+# Execution begins at address 0
+  .pos 0
+  irmovl stack,%esp
+  call main
+  halt
+
+.align 4
+# Source block
+src:
+.long 0x00a
+.long 0x0b0
+.long 0xc00
+# Destination block
+dest:
+.long 0x111
+.long 0x222
+.long 0x333
+
+main:
+  pushl %ebp          #save %ebp
+  rrmovl %esp,%ebp    #new %ebp
+  irmovl $3,%edx      #%edx=len=3
+  pushl %edx
+  irmovl dest,%edx    #%edx=dest
+  pushl %edx
+  irmovl src,%edx     #%edx=src
+  pushl %edx
+  call copy_block
+  rrmovl %ebp,%esp    #leave
+  popl %ebp           #restore %ebp
+  ret
+
+#copy_block(int *src, int *dest, int len)
+#argument in edi,esi,edx
+
+copy_block:
+  pushl %ebp           #save %ebp
+  rrmovl %esp,%ebp     #new %ebp
+  irmovl $0,%eax       #set result(return value)=0
+  mrmovl 16(%esp),%edx #%edx=len
+  mrmovl 12(%esp),%esi #%esi=dest
+  mrmovl 8(%esp),%edi  #%edi=src
+  andl %edx,%edx       #set CC
+  jmp test
+loop:
+  mrmovl (%edi),%ebx  #val=*src
+  irmovl $4,%ecx      #set constant 4
+  addl %ecx,%edi      #src++
+  rmmovl %ebx,(%esi)  #dest=val
+  addl %ecx,%esi      #dest++
+  xorl %ebx,%eax      #result^=val
+  irmovl $1,%ecx      #set constant 1
+  subl %ecx,%edx      #len--
+test:
+  jne loop              #if len>0 do
+  rrmovl %ebp,%esp      #leave
+  popl %ebp             #restore %ebp
+  ret
+
+  .pos 0x200
+stack:

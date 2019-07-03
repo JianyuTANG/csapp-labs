@@ -1,0 +1,148 @@
+\documentclass[UTF8]{ctexart}
+\title{ARCHLAB-PARTB\ \ 报告}
+\author{软件71\ \  唐建宇\ \  2017012221}
+\date{\today}
+\usepackage{amsmath}
+\usepackage{multirow}
+\usepackage{graphicx}
+\newcommand{\tabincell}[2]{\begin{tabular}{@{}#1@{}}#2\end{tabular}}
+\begin{document}
+\maketitle
+\paragraph{1.指令的实现步骤}
+\begin{center}
+    iaddl 指令\\
+    \ \\
+    \begin{tabular}{l|l}
+        \hline
+        Fetch&\tabincell{l}{icode:ifun$\leftarrow$ M1[PC]\\
+                            rA:rB$\leftarrow$ M1[PC+1]\\
+                            ValC$\leftarrow$ M4[PC+2]\ \\
+                            ValP$\leftarrow$ PC+6}\\
+        \hline
+        Decode&ValB$\leftarrow$ R[rB]\\
+        \hline
+        Execute&ValE$\leftarrow$ ValC+ValB\\
+        \hline
+        Memory&\\
+        \hline
+        Write back&R[rB]$\leftarrow$ ValE\\
+        \hline
+        PC update&PC$\leftarrow$ ValP\\
+        \hline
+    \end{tabular}\\
+\end{center}
+\newpage
+\begin{center}
+    ileave 指令\\
+    \ \\
+    \begin{tabular}{l|l}
+        \hline
+        Fetch&\tabincell{l}{icode:ifun$\leftarrow$ M1[PC]\\
+                            rA:rB$\leftarrow$ M1[PC+1]\\
+                            ValC$\leftarrow$ M4[PC+2]\ \\
+                            ValP$\leftarrow$ PC+1}\\
+        \hline
+        Decode&ValA$\leftarrow$ R[\%ebp]\\
+        \hline
+        Execute&ValE$\leftarrow$ ValA+4\\
+        \hline
+        Memory&ValM$\leftarrow$ M[ValA]\\
+        \hline
+        Write back&\tabincell{l}{R[\%esp]$\leftarrow$ ValE \\
+        R[\%ebp]$\leftarrow$ ValM  }\\
+        \hline
+        PC update&PC$\leftarrow$ ValP\\
+        \hline
+    \end{tabular}\\
+\end{center}
+\paragraph{2.SEQ处理器HCL文件的修改}
+\ \\
+\ \\
+\ \\
+    \begin{tabular}{l|l}
+        \hline
+        Fetch&\tabincell{l}{icode:ifun$\leftarrow$ M1[PC]\\
+                            rA:rB$\leftarrow$ M1[PC+1]\\
+                            ValC$\leftarrow$ M4[PC+2]\ \\
+                            ValP$\leftarrow$ PC+6}\\
+        \hline
+        Decode&\tabincell{l}{ValA$\leftarrow$ R[rA]\\
+ValB$\leftarrow$ R[rB]
+          }\\
+        \hline
+        Execute&\tabincell{l}{ ValE$\leftarrow$ ValC+ValB\\
+          }\\
+       
+        \hline
+        Memory&\tabincell{l}{ValM$\leftarrow$ M[ValE]\\
+M[ValE]$\leftarrow$ ValA
+          }\\
+        
+        \hline
+        Write back&R[rA]$\leftarrow$ ValM\\
+        \hline
+        PC update&PC$\leftarrow$ ValP\\
+        \hline
+    \end{tabular}\\
+\newpage
+    \begin{tabular}{l|l}
+        \hline
+        Fetch&\tabincell{l}{icode:ifun$\leftarrow$ M1[PC]\\
+                            rA:rB$\leftarrow$ M1[PC+1]\\
+                            ValP$\leftarrow$ PC+2}\\
+        \hline
+        Decode&\tabincell{l}{ValA$\leftarrow$ R[rA]\\
+ValB$\leftarrow$ R[rB]
+          }\\
+        \hline
+        Execute&\\
+        \hline
+        Memory&\\
+        \hline
+        Write back&\tabincell{l}{R[rA]$\leftarrow$ ValB\\
+R[rB]$\leftarrow$ ValA
+          }\\
+        \hline
+        PC update&PC$\leftarrow$ ValP\\
+        \hline
+    \end{tabular}\\
+\newpage
+    \begin{tabular}{l|l}
+        \hline
+        Fetch&\tabincell{l}{icode:ifun$\leftarrow$ M1[PC]\\
+                            rA:rB$\leftarrow$ M1[PC+1]\\
+                            ValC$\leftarrow$ M4[PC+2]\ \\
+                            ValP$\leftarrow$ PC+6}\\
+        \hline
+        Decode&ValA$\leftarrow$ R[rA]\\
+        \hline
+        Execute&ValE$\leftarrow$ ValC\ \ OP\ \ ValA\\
+        \hline
+        Memory&\\
+        \hline
+        Write back&R[rA]$\leftarrow$ ValE\\
+        \hline
+        PC update&PC$\leftarrow$ ValP\\
+        \hline
+    \end{tabular}\\
+\newpage
+    \begin{tabular}{l|l}
+        \hline
+        Fetch&\tabincell{l}{icode:ifun$\leftarrow$ M1[PC]\\
+                            rA:rB$\leftarrow$ M1[PC+1]\\
+                            ValP$\leftarrow$ PC+2}\\
+        \hline
+        Decode&\tabincell{l}{ValA$\leftarrow$ R[rA]\\
+ValB$\leftarrow$ R[rB]
+          }\\
+        \hline
+        Execute&ValE$\leftarrow$ ValA\ \ OP\ \ ValB\\
+        \hline
+        Memory&\\
+        \hline
+        Write back&\\
+        \hline
+        PC update&PC$\leftarrow$ ValP\\
+        \hline
+    \end{tabular}\\
+\end{document}

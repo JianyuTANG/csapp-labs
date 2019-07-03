@@ -1,0 +1,54 @@
+# Author: Tang Jianyu
+
+# Execution begins at address 0
+  .pos 0
+  irmovl stack,%esp
+  call main
+  halt
+
+# Sample linked list
+  .align 4
+ele1:
+  .long 0x00a
+  .long ele2
+ele2:
+  .long 0x0b0
+  .long ele3
+ele3:
+  .long 0xc00
+  .long 0
+
+main:
+  pushl %ebp        #save %ebp
+  rrmovl %esp,%ebp  #new %ebp
+  irmovl ele1,%edi
+  pushl %edi        #put the argument into the stack before calling
+  call sum_list
+  rrmovl %ebp,%esp  #restore %esp
+  popl %ebp         #restore %ebp
+  ret
+
+#sum_list(list_ptr ls)
+
+sum_list:
+  pushl %ebp            #save %ebp
+  rrmovl %esp,%ebp      #new %ebp
+  irmovl $4,%ecx        #set constant 4
+  xorl %eax,%eax        #set sum=0
+  mrmovl 8(%ebp),%esi   #get the value of ls
+  andl %esi,%esi
+  jmp test              #start while
+loop:
+  mrmovl (%esi),%edx    #%edx=ls->val
+  addl %edx,%eax        #sum+=ls->val
+  addl %ecx,%esi        #ls+=4
+  mrmovl (%esi),%esi    #ls=ls->next
+  andl %esi,%esi
+test:
+  jne loop              #if ls>0
+  rrmovl %ebp,%esp      #restore %esp
+  popl %ebp             #restore %ebp
+  ret
+
+  .pos 0x200
+stack:

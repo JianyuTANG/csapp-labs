@@ -1,0 +1,56 @@
+# Author: Tang Jianyu
+
+# Execution begins at address 0
+  .pos 0
+  irmovl stack,%esp
+  call main
+  halt
+
+# Sample linked list
+  .align 4
+ele1:
+  .long 0x00a
+  .long ele2
+ele2:
+  .long 0x0b0
+  .long ele3
+ele3:
+  .long 0xc00
+  .long 0
+
+main:
+  pushl %ebp        #save %ebp
+  rrmovl %esp,%ebp  #new %ebp
+  irmovl ele1,%edi
+  pushl %edi        #put the argument into the stack before calling
+  call rsum_list
+  rrmovl %ebp,%esp  #restore %esp
+  popl %ebp         #restore %ebp
+  ret
+
+#rsum_list(list_ptr ls)
+
+rsum_list:
+  pushl %ebp            #save %ebp
+  rrmovl %esp,%ebp      #new %ebp
+  irmovl $4,%ecx        #set constant 4
+  xorl %eax,%eax        #set return value=0
+  mrmovl 8(%ebp),%esi   #get the value of ls
+  andl %esi,%esi
+  je end                #if(!ls) goto end
+  mrmovl (%esi),%edx    #%edx=ls->val
+  pushl %edx            #save %edx=val
+  addl %ecx,%esi        #ls+=4
+  mrmovl (%esi),%esi    #ls=ls->next
+  pushl %esi            #put the argument ls->next into the stack before calling
+  call rsum_list        #rest=rsum_list(ls->next)
+  popl %edx             #restore %edx=val
+  popl %edx             #restore %edx=val
+  addl %edx,%eax        #result=val+rest
+end:
+  rrmovl %ebp,%esp      #restore %esp
+  popl %ebp             #restore %ebp
+  ret
+
+  .pos 0x200
+stack:
